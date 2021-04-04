@@ -3,40 +3,37 @@ package paikeee
 
 import java.io.File
 import java.lang.Exception
-import java.lang.IndexOutOfBoundsException
-import java.lang.NumberFormatException
 
 
 fun combiner(flagI: Boolean, flagU: Boolean, flagS: Boolean,
              input: List<String>, s: Int): List<Pair<Int, String>> {
 
     val output = mutableListOf<Pair<Int, String>>()
-    var last = Pair(1, input.first())
+    var last = input.first()
     var num = 1
+    var last1 = if (flagI) last.toLowerCase() else last
+    if (flagS) last1 = last1.substring(s)
 
     for (line in input.subList(1, input.lastIndex + 1)) {
 
-        var last1 = if (flagI) last.second.toLowerCase() else last.second
         var line1 = if (flagI) line.toLowerCase() else line
-        if (flagS) {
-            last1 = last1.substring(s)
-            line1 = line1.substring(s)
-        }
+        if (flagS) line1 = line1.substring(s)
+
         if (last1 != line1) {
             when {
-                flagU && last.first == 1 -> output.add(last)
-                !flagU -> output.add(last)
+                flagU && num == 1 -> output.add(Pair(num, last))
+                !flagU -> output.add(Pair(num, last))
             }
-            last = Pair(1, line)
+            last = line
             num = 1
         } else {
             num++
-            last = Pair(num, last.second)
         }
+        last1 = line1
     }
     when {
-        flagU && last.first == 1 -> output.add(last)
-        !flagU -> output.add(last)
+        flagU && num == 1 -> output.add(Pair(num, last))
+        !flagU -> output.add(Pair(num, last))
     }
     return output
 }
@@ -61,37 +58,29 @@ fun main(args: Array<String>) {
             "-u" -> flagU = true
             "-s" -> {
                 flagS = true
-                try {
-                    if (Regex("""\d*""").matches(args[i + 1])) s = args[i + 1].toInt()
-                    else throw NumberFormatException()
-                } catch (e: IndexOutOfBoundsException)
-                {
-                    throw Exception ("No number for flag -s")
-                }
+                if (i + 1 < args.size) s = args[i + 1].toInt()
+                else throw Exception("No number for flag -s")
                 i++
             }
             "-o" -> {
                 flagO = true
-                try {
-                    outputName = args[i + 1]
-                } catch (e: IndexOutOfBoundsException)
-                {
-                    throw Exception ("File name expected")
-                }
+                if (i + 1 < args.size) outputName = args[i + 1]
+                else throw Exception("File name expected")
                 i++
             }
             else -> if (File(args[i]).isFile) {
                 input = File(args[i]).readLines()
-                break
+                if (i != args.size - 1) throw Exception("Arguments are unacceptable after file name")
             } else throw Exception("Wrong file name")
         }
         i++
     }
     if (input.isEmpty())
-        input = (generateSequence { readLine() }.takeWhile{ it != "" }).toList()
+        input = generateSequence { readLine() }.toList()
 
-    val output = if (flagC) combiner(flagI, flagU, flagS, input, s).map { it.first.toString() + it.second }
-    else combiner(flagI, flagU, flagS, input, s).map { it.second }
+    val result = combiner(flagI, flagU, flagS, input, s)
+    val output = if (flagC) result.map { it.first.toString() + it.second }
+    else result.map { it.second }
 
     if (flagO)
         File(outputName).bufferedWriter().use { out ->

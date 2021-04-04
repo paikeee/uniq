@@ -16,26 +16,6 @@ class Testing {
 
     @Test
     fun main() {
-         try {
-              arrayOf("-s")
-         } catch (e: Exception) {
-             println("No number for flag -s")
-         }
-        try {
-            arrayOf("-s dsd")
-        } catch (e: NumberFormatException) {
-            println("Number expected")
-        }
-        try {
-            arrayOf("-o")
-        } catch (e: Exception) {
-            println("File name expected")
-        }
-        try {
-            arrayOf("-i -c qwerty.txxt")
-        } catch (e: Exception) {
-            println("Wrong file name")
-        }
 
         main(arrayOf("-c", "-o", "forTests/result.txt", "forTests/1.txt"))
         assertFileContent("forTests/result.txt",
