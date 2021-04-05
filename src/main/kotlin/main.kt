@@ -3,11 +3,12 @@ package paikeee
 
 import java.io.File
 import java.lang.Exception
+import kotlin.system.exitProcess
 
 
 fun combiner(flagI: Boolean, flagU: Boolean, flagS: Boolean,
              input: List<String>, s: Int): List<Pair<Int, String>> {
-
+    if (input.isEmpty()) return listOf(Pair(1, ""))
     val output = mutableListOf<Pair<Int, String>>()
     var last = input.first()
     var num = 1
@@ -59,19 +60,19 @@ fun main(args: Array<String>) {
             "-s" -> {
                 flagS = true
                 if (i + 1 < args.size) s = args[i + 1].toInt()
-                else throw Exception("No number for flag -s")
+                else exitProcess(1)
                 i++
             }
             "-o" -> {
                 flagO = true
                 if (i + 1 < args.size) outputName = args[i + 1]
-                else throw Exception("File name expected")
+                else throw exitProcess(1)
                 i++
             }
             else -> if (File(args[i]).isFile) {
                 input = File(args[i]).readLines()
-                if (i != args.size - 1) throw Exception("Arguments are unacceptable after file name")
-            } else throw Exception("Wrong file name")
+                if (i != args.size - 1) exitProcess(1)
+            } else exitProcess(1)
         }
         i++
     }

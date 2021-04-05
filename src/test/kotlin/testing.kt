@@ -30,5 +30,8 @@ class Testing {
         main(arrayOf("-i", "-u", "-o", "forTests/result.txt", "forTests/2.txt"))
         assertFileContent("forTests/result.txt",
                 "ZzZz")
+        main(arrayOf("-o", "forTests/result.txt", "forTests/empty.txt" ))
+        assertFileContent("forTests/result.txt",
+                "")
     }
 }
