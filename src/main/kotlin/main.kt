@@ -2,7 +2,6 @@ package paikeee
 
 
 import java.io.File
-import java.lang.Exception
 import kotlin.system.exitProcess
 
 
@@ -60,19 +59,31 @@ fun main(args: Array<String>) {
             "-s" -> {
                 flagS = true
                 if (i + 1 < args.size) s = args[i + 1].toInt()
-                else exitProcess(1)
+                else {
+                    println("No number for flag -s")
+                    exitProcess(1)
+                }
                 i++
             }
             "-o" -> {
                 flagO = true
                 if (i + 1 < args.size) outputName = args[i + 1]
-                else throw exitProcess(1)
+                else {
+                    println("File name expected")
+                    exitProcess(1)
+                }
                 i++
             }
             else -> if (File(args[i]).isFile) {
                 input = File(args[i]).readLines()
-                if (i != args.size - 1) exitProcess(1)
-            } else exitProcess(1)
+                if (i != args.size - 1) {
+                    println("Arguments are unacceptable after file name")
+                    exitProcess(1)
+                }
+            } else {
+                println("Wrong file name")
+                exitProcess(1)
+            }
         }
         i++
     }
